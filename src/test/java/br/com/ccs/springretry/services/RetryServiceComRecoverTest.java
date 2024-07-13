@@ -9,23 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RetryServiceTest {
+class RetryServiceComRecoverTest {
 
     @Autowired
-    private RetryService retryService;
+    private RetryServiceComRecover retryServiceComRecover;
 
     @Test
     void testRetryCustomException() {
-        Assertions.assertThrows(CustomException.class, () -> retryService.retry(new CustomException()));
+        Assertions.assertDoesNotThrow(() -> retryServiceComRecover.retry(new CustomException()));
     }
 
     @Test
-    void testRetryNovaCustomException(){
-        Assertions.assertThrows(CustomException.class, () -> retryService.retry(new NovaCustomException()));
+    void testRetryNovaCustomException() {
+        Assertions.assertDoesNotThrow(() -> retryServiceComRecover.retry(new NovaCustomException()));
     }
 
     @Test
-    void testRetryOutraCustomException(){
-        Assertions.assertThrows(CustomException.class, () -> retryService.retry(new OutraCustomException()));
+    void testRetryOutraCustomException() {
+        Assertions.assertDoesNotThrow(() -> retryServiceComRecover.retry(new OutraCustomException()));
     }
 }

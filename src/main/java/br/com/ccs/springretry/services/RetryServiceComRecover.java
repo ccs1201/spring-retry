@@ -9,27 +9,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RetryService {
+public class RetryServiceComRecover {
 
     private int tentativas = 0;
-    private int customException = 0;
-    private int novaCustomException = 0;
-    private int outraCustomException = 0;
 
-    @Retryable(
-            retryFor = CustomException.class,
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 10)
-    )
+    @Retryable(retryFor = CustomException.class, maxAttempts = 3, backoff = @Backoff(delay = 500))
     public <T extends CustomException> void retry(T t) {
-        log.info("Tentativa {}", ++tentativas);
+        log.info("Tentativa com recover {} para {}", ++tentativas, t.getClass().getSimpleName());
         throw t;
     }
 
     @Recover
     public void recover(CustomException e) {
-        log.info("Recover, zerando contadores.");
-        customException = 0;
+        log.info("Recover para {}, zerando tentativas.", e.getClass().getSimpleName());
+        tentativas = 0;
     }
-
 }

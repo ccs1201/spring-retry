@@ -3,33 +3,18 @@ package br.com.ccs.springretry.services;
 import br.com.ccs.springretry.exceptions.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RetryServiceComRecover {
+public class RetryServiceSemRecover {
 
     private int tentativas = 0;
-    private int customException = 0;
-    private int novaCustomException = 0;
-    private int outraCustomException = 0;
 
-    @Retryable(
-            retryFor = CustomException.class,
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 10)
-    )
+    @Retryable(retryFor = CustomException.class, maxAttempts = 3, backoff = @Backoff(delay = 500))
     public <T extends CustomException> void retry(T t) {
-        log.info("Tentativa {}", ++tentativas);
+        log.info("Tentativa {} para {}", ++tentativas, t.getClass().getSimpleName());
         throw t;
     }
-
-    @Recover
-    public void recover(CustomException e) {
-        log.info("Recover, zerando contadores.");
-        customException = 0;
-    }
-
 }
